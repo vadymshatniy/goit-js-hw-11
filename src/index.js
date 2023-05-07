@@ -51,10 +51,12 @@ async function fetchPhotosAbout(name, page) {
     }
 }
 
+
+
 function createGallery(data) {
     let galleryHTML = "";
     data.forEach(photo => {
-        galleryHTML +=
+        galleryHTML += 
             `
             <div class="photo-card">
             <a href="${photo.largeImageURL}" target="_blank">
@@ -77,13 +79,32 @@ formBox.addEventListener('submit', async (event) => {
     const name = input.value.trim();
     let data = await fetchPhotosAbout(name, page);
     gallery.innerHTML = createGallery(data);
+    if (allHits < page * 40) {
+        loadMoreButton.setAttribute("hidden", "hidden");
+        Notiflix.Notify.info("We're sorry, but you've reached the end of search results.");
+    }
 });
 
 loadMoreButton.addEventListener('click', async (event) => {
     page += 1;
     const name = input.value.trim();
     let data = await fetchPhotosAbout(name, page);
-    gallery.innerHTML = createGallery(data);
+    data.forEach(photo => {
+        let card =
+            `
+            <div class="photo-card">
+            <a href="${photo.largeImageURL}" target="_blank">
+            <img src="${photo.webformatURL}" alt="${photo.tags}"></a>
+            <div class="info">
+                <p class="info-item"><b>Likes: ${photo.likes}</b></p>
+                <p class="info-item"><b>Views: ${photo.views}</b></p>
+                <p class="info-item"><b>Comments: ${photo.comments}</b></p>
+                <p class="info-item"><b>Downloads: ${photo.downloads}</b></p>
+                </div>
+            </div>
+            `;
+        gallery.insertAdjacentHTML("beforeend", card);
+    });
     if (allHits < page * 40) {
         loadMoreButton.setAttribute("hidden", "hidden");
         Notiflix.Notify.info("We're sorry, but you've reached the end of search results.");
