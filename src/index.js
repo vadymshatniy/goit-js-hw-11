@@ -75,7 +75,7 @@ function createGallery(data) {
 
 formBox.addEventListener('submit', async (event) => {
     event.preventDefault();
-    let page = 1;
+    page = 1;
     const name = input.value.trim();
     let data = await fetchPhotosAbout(name, page);
     gallery.innerHTML = createGallery(data);
